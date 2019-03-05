@@ -2,6 +2,7 @@ const express = require('express')
 const passport = require('passport')
 const cookieSession = require('cookie-session')
 const app = express ()
+app.set('view engine', 'ejs');
 
 var GitHubStrategy = require('passport-github').Strategy;
 
@@ -25,8 +26,8 @@ passport.deserializeUser((id,done)=>{
 })
 
 passport.use(new GitHubStrategy({
-    clientID: 'put your clientId',
-    clientSecret: 'put your clientSecret',
+    clientID: 'your client id',
+    clientSecret: 'your client secret',
     callbackURL: "http://localhost:3000/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
@@ -36,7 +37,7 @@ passport.use(new GitHubStrategy({
 ));
 
   app.get('/',(req,res,next)=>{
-      res.send("welcome to home page");
+      res.render("home");
   })
   app.get('/auth/github',
   passport.authenticate('github'));
@@ -44,8 +45,7 @@ passport.use(new GitHubStrategy({
 app.get('/auth/github/callback', 
   passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
-    // Successful authentication, redirect home.
-    res.send(req.user);
+    res.render('profile',{user:req.user});
   });
 
   app.listen(3000, ()=>{
