@@ -1,13 +1,12 @@
 const express = require('express')
 const passport = require('passport')
 const cookieSession = require('cookie-session')
+const GitHubStrategy = require('passport-github').Strategy;
+
 const app = express ()
 app.set('view engine', 'ejs');
 
-var GitHubStrategy = require('passport-github').Strategy;
-
 const User = [];
-
 
 
 app.use(cookieSession({
@@ -26,7 +25,7 @@ passport.deserializeUser((id,done)=>{
 })
 
 passport.use(new GitHubStrategy({
-    clientID: 'your client id',
+    clientID: 'your clientId',
     clientSecret: 'your client secret',
     callbackURL: "http://localhost:3000/auth/github/callback"
   },
@@ -36,20 +35,21 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-  app.get('/',(req,res,next)=>{
-      res.render("home");
-  })
-  app.get('/auth/github',
-  passport.authenticate('github'));
+app.get('/',(req,res,next)=>{
+    res.render("home");
+})
+
+app.get('/auth/github',
+passport.authenticate('github'));
 
 app.get('/auth/github/callback', 
-  passport.authenticate('github', { failureRedirect: '/login' }),
-  function(req, res) {
-    res.render('profile',{user:req.user});
-  });
+passport.authenticate('github', { failureRedirect: '/login' }),
+function(req, res) {
+  res.render('profile',{user:req.user});
+});
 
-  app.listen(3000, ()=>{
-      console.log("server is started at 3000 port")
-  })
+app.listen(3000, ()=>{
+    console.log("server is started at 3000 port")
+})
 
 
