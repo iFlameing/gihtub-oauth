@@ -1,4 +1,4 @@
-# gihtub-oauth
+# github-oauth
 This is a simple demo of github-oauth with passport
 
 **Getting started**
